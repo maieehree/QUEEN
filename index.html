@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD My Dear Queen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #fceff9 0%, #f4dce8 100%);
+            perspective: 1500px;
+            overflow: hidden;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Floating Hearts Background Animation */
+        .hearts-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .heart-particle {
+            position: absolute;
+            bottom: -10vh;
+            color: rgba(255, 100, 150, 0.3);
+            font-size: 2rem;
+            animation: floatUp 10s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-120vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Book Container */
+        .book {
+            position: relative;
+            width: 350px;
+            height: 500px;
+            transition: transform 0.8s ease-in-out;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        /* Pages */
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform-origin: left center;
+            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-style: preserve-3d;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fffaf0;
+            /* Cream paper */
+        }
+
+        /* Page Ordering (Z-Index) */
+        /* We have: Cover (P1), P2, P3, P4. 
+           We conceptulize them as layers.
+           Topmost is Cover.
+        */
+        #p1 {
+            z-index: 5;
+        }
+
+        #p2 {
+            z-index: 4;
+        }
+
+        #p3 {
+            z-index: 3;
+        }
+
+        #p4 {
+            z-index: 2;
+        }
+
+        #p5 {
+            z-index: 1;
+        }
+
+        /* Back cover */
+
+        /* Front and Back of each page sheet */
+        .front,
+        .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .front {
+            background: #fff;
+        }
+
+        .back {
+            background: #fdf5e6;
+            transform: rotateY(180deg);
+            border-left: 1px solid #eee;
+        }
+
+        /* Flipped state */
+        .flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* Cover Design */
+        .cover-front {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #fff;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .cover-text {
+            font-family: 'Great Vibes', cursive;
+            color: #d6336c;
+            text-shadow: 2px 2px 0px white;
+            text-align: center;
+        }
+
+        /* Content Styling */
+        .polaroid {
+            background: white;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: rotate(-2deg);
+            margin-bottom: 2rem;
+            width: 80%;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .text-content {
+            padding: 2rem;
+            text-align: center;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #d6336c;
+            font-weight: bold;
+        }
+
+        .instruction {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .book {
+                width: 300px;
+                height: 450px;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+
+    <!-- Background Hearts -->
+    <div class="hearts-bg" id="hearts-container"></div>
+
+    <div class="book relative" id="book">
+
+        <!-- Page 1: Cover -->
+        <div class="page" id="p1" onclick="flipPage(1)">
+            <div class="front cover-front">
+                <div class="border-4 border-white p-8 rounded-lg shadow-inner">
+                    <h1 class="cover-text text-6xl mb-4">HBD</h1>
+                    <h2 class="cover-text text-4xl">My Dear Queen</h2>
+                    <div class="mt-8 text-center text-white text-2xl">
+                        ❤️
+                    </div>
+                </div>
+                <p class="absolute bottom-10 text-white/80 font-serif italic text-sm">For the most special person...</p>
+            </div>
+            <div class="back p-6 flex flex-col items-center justify-center bg-pink-50">
+                <div class="polaroid rotate-2">
+                    <img src="static/images/image1.jpg" alt="Us" class="rounded">
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 2 -->
+        <div class="page" id="p2" onclick="flipPage(2)">
+            <div class="front p-8 flex flex-col items-center justify-center bg-white border-l-4 border-pink-100">
+                <h3 class="font-great-vibes text-3xl text-pink-500 mb-4 self-start">To My Queen,</h3>
+                <p class="text-gray-700 text-lg leading-relaxed font-serif italic mb-4">
+                    "Every time I think of you, my heart feels warm and peaceful, as if I’ve finally found the place
+                    where I truly belong."
+                </p>
+                <div class="mt-4 text-pink-300 text-2xl">❧</div>
+            </div>
+            <div class="back p-6 flex flex-col items-center justify-center bg-pink-50">
+                <div class="polaroid -rotate-1">
+                    <img src="static/images/image2.jpg" alt="Moments" class="rounded">
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 3 -->
+        <div class="page" id="p3" onclick="flipPage(3)">
+            <div class="front p-8 flex flex-col items-center justify-center bg-white border-l-4 border-pink-100">
+                <p class="text-gray-700 text-lg leading-relaxed font-serif italic mb-6">
+                    "From the moment you came into my life, Queen, everything changed in the most beautiful way, and I
+                    realized what real love truly means."
+                </p>
+                <div class="mt-4 text-pink-300 text-2xl">❤</div>
+            </div>
+            <div class="back p-6 flex flex-col items-center justify-center bg-pink-50">
+                <div class="polaroid rotate-3">
+                    <img src="static/images/image3.jpg" alt="Love" class="rounded">
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 4 -->
+        <div class="page" id="p4" onclick="flipPage(4)">
+            <div class="front p-8 flex flex-col items-center justify-center bg-white border-l-4 border-pink-100">
+                <p class="text-gray-700 text-lg leading-relaxed font-serif italic mb-6">
+                    "Queen, you are not just the woman I love, but the one my heart chooses again and again, no matter
+                    how many times life tries to pull us apart."
+                </p>
+                <button
+                    class="mt-8 px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition shadow-lg text-sm"
+                    onclick="location.reload(); event.stopPropagation();">
+                    Read Again
+                </button>
+            </div>
+            <div class="back cover-front">
+                <h2 class="cover-text text-4xl text-white">Forever Yours</h2>
+            </div>
+        </div>
+
+        <div class="instruction">
+            Tap the book to turn pages
+        </div>
+
+    </div>
+
+    <script>
+        let currentState = 1;
+        const totalPages = 4;
+
+        function flipPage(pageId) {
+            const page = document.getElementById('p' + pageId);
+
+            // Should integrate logic to ensure order
+            if (pageId === currentState) {
+                // Formatting for Z-Index change to make it look like it's laying flat on left
+                page.classList.add('flipped');
+                // Adjust z-index after transition to layer correctly
+                setTimeout(() => {
+                    page.style.zIndex = totalPages - pageId;
+                }, 500);
+                currentState++;
+            } else if (pageId < currentState) {
+                // Flip back
+                page.classList.remove('flipped');
+                setTimeout(() => {
+                    page.style.zIndex = 5 - (pageId - 1); // Restore original z-order approximation
+                }, 500);
+                currentState--;
+            }
+        }
+
+        // Particle System
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const hearts = ['❤️', '💖', '💕', '🎈', '✨'];
+
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.classList.add('heart-particle');
+                el.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                el.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+                container.appendChild(el);
+
+                setTimeout(() => {
+                    el.remove();
+                }, 10000);
+            }, 500);
+        }
+
+        createHearts();
+    </script>
+</body>
+
+</html>
